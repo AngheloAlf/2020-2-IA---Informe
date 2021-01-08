@@ -1,8 +1,10 @@
+# https://tex.stackexchange.com/a/459470
+
 all:
-	pdflatex main.tex
-	bibtex main
-	pdflatex main.tex
-	pdflatex main.tex
+	!( : | pdflatex -halt-on-error --jobname=201473062-4-AngheloCarvajal-Ent2 main.tex | grep '^!.*' -A200 --color=always )
+	bibtex 201473062-4-AngheloCarvajal-Ent2
+	!( : | pdflatex -halt-on-error --jobname=201473062-4-AngheloCarvajal-Ent2 main.tex | grep '^!.*' -A200 --color=always ) 
+	!( : | pdflatex -halt-on-error --jobname=201473062-4-AngheloCarvajal-Ent2 main.tex | grep '^!.*' -A200 --color=always )
 
 
 install-dependencies:
@@ -17,4 +19,4 @@ install-dependencies:
 
 
 clean:
-	rm -f *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out *.pdf
+	rm -f *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out
