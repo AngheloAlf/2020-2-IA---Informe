@@ -1,0 +1,178 @@
+\section{Modelo Matemático}
+
+A continuación se presenta un modelo de programación entera mixta, tal como es descrito en \cite{Lechemezclada2}, el cual está basado en \cite{MilkWithBlending}.
+
+\subsection{Función objetivo}
+
+Este problema tiene como objetivo la maximización del beneficio monetario, por lo que se considera la diferencia entre la ganancia producida por la leche recolectada vs los costos de transporte de las rutas construidas.
+
+Esto se representa a través de:
+
+\begin{equation}
+    Max \left\{ \sum_{t\in T}\sum_{r\in T} \alpha^{r}v^{tr} - \sum_{(i, j, k \in A K)} c_{i j}^{k}x_{i j}^{k} \right\}
+\end{equation}
+
+
+\subsection{Parámetros}
+
+Los parámetros de este problema son los siguientes:
+
+\begin{itemize}
+    \item $A$: Conjunto de arcos que representan caminos entre productores de leche.
+    \item $A^0$ : Conjunto de arcos que representan caminos entre planta y productores de leche.
+    \item $N$: Conjunto de productores, $N = 0, ..., n$. Se consideran en total n productores.
+    \item $N_0$ : Conjunto de productores y la planta.
+    \item $K$: Conjunto de camiones
+    \item $T$ : Conjunto de calidades de leche
+    \item $N^t$ : Conjunto de productores de leche de calidad $ t \in T $.
+    \item $D^t$ : Resultado de la mezcla de leche de calidad $r$ con leche de calidad $t$.
+    \item $IT$ : Conjunto de pares ordenados $(i, t)$ de productores $i$ y leche de calidad $t$, donde cada cliente produce solo una calidad de leche.
+    \item $Q^k$ : Capacidad de cada camión $k$.
+    \item $q_i^t$ : Cantidad de leche $t$ producida por el productor $i$.
+    \item $c_{i j}^{k}$ : Costo del viaje de cada camión $k$ sobre el arco $(i, j) \in A \cup A^0$.
+    \item $\alpha^t$ : Ingreso por unidad leche de calidad $t$.
+    \item $P^t$ : Requerimientos de leche de calidad $t$ de la planta.
+\end{itemize}
+
+
+
+\subsection{Variables de decisión}
+
+Este modelo posee 5 variables de decisión. De estas, 3 son binarias:
+\begin{itemize}
+    \item $x_{i j}^k$, la cual vale 1 si el camión $k$ viaja directamente del nodo $i$ al nodo $j$. Espacio de búsqueda: $2^{|N| * |N| * |K|}$
+    \item $y_{i}^{k t}$, la cual vale 1 si el camión $k$ recoge leche de calidad $t$ de la granja $i$. Espacio de búsqueda: $2^{|N| * |K| * |T|}$
+    \item $z^{k t}$, la cual vale 1 si el camión $k$ entrega leche de calidad $t$ a la planta. Espacio de búsqueda: $2^{|K| * |T|}$
+\end{itemize}
+
+Las otras 2 variables no binarias:
+\begin{itemize}
+    \item $w^{k t}$, la cual indica el volumen de leche de calidad $t$ que el camión $k$ entrega a la planta. Espacio de búsqueda: $|Q|^{|K| * |T|}$
+    \item $v^{t r}$, la cual indica el volumen de leche de calidad $t$ entregada a la planta, mezclada para su uso como leche de calidad $r$. Espacio de búsqueda: $|Q|^{|T| * |T|}$
+\end{itemize}
+
+
+\subsubsection{Espacio de búsqueda}
+
+El espacio de búsqueda es:
+
+\begin{equation}
+    2^{|N| * |N| * |K|} * 2^{|N| * |K| * |T|}  * 2^{|K| * |T|} * |Q|^{|K| * |T|} * |Q|^{|T| * |T|}
+\end{equation}
+
+Lo cual puede ser reescrito como:
+
+\begin{equation}
+    2^{|K|*(|N|^2 + |N|*|T| + |T|)} * |Q|^{|T| * (|K| * |T|)}
+\end{equation}
+
+\subsection{Restricciones}
+
+Este modelo se ve restringido por las siguientes restricciones:
+
+%\begin{itemize}
+     La restricción \ref{eq:1} limita la cantidad de leche que puede recolectar cada camión de
+acuerdo a su capacidad. Se considera una flota heterogénea.
+    
+        \begin{align} \label{eq:1}
+            \sum_{r\in T} \sum_{i \in N: (i, j) \in IT} q_{i}^{t} y_{i}^{k t} \leq Q^k, \forall k \in K
+        \end{align}
+        
+
+     La restricción \ref{eq:2}  establece que la recolección de la leche de cada productor debe ser
+realizada por exactamente un camión. Esto implica que se debe recolectar la leche de
+todos los productores y que un productor no puede ser visitado más de una vez.
+
+        \begin{align} \label{eq:2}
+            \sum_{k\in K_i} y^{k t} = 1, \forall i \in N, t \in T : (i, j) \in IT
+        \end{align}
+        
+     La restricción  \ref{eq:3} establece que cada camión debe tener como máximo una ruta la cual
+comienza desde la planta.
+
+        \begin{align} \label{eq:3}
+            \sum_{j: (0_k, j, k) \in AK} x_{0_k j}^{k} \leq 1, \forall k \in K
+        \end{align}
+        
+     La restricción \ref{eq:4} permite controlar el flujo para el orden de las visitas de los nodos
+por parte de cada camión.
+
+        \begin{align} \label{eq:4}
+            \sum_{i: (i, j, k) \in AK} x_{i j}^{k} =  \sum_{h: (j, h, k) \in AK} x_{j h}^{k} , \forall k \in K_j, j \in N_0
+        \end{align}
+
+     La restricción \ref{eq:5} establece que cada camión que visita cada granja debe detenerse y
+recoger su leche.
+
+        \begin{align} \label{eq:5}
+            \sum_{p: (p, i, k) \in AK} x_{p i}^{k} =  y_{i}^{k t} , \forall k \in K_i, i \in N, t \in T: (i, t) \in IT
+        \end{align}
+
+     Las restricciones \ref{eq:6}, \ref{eq:7}, \ref{eq:8} y \ref{eq:9} establecen las reglas de mezcla de leche. La restricción \ref{eq:6} controla el tipo de leche de cada camión de acuerdo a cada una de las granjas que ha visitado. La restricción \ref{eq:7} controla que cada camión entrega en planta solo un tipo de leche. La restricción \ref{eq:8} mide la cantidad de leche entregada de cada tipo de acuerdo a la capacidad de los camiones que recolectaron cada tipo de leche. Por último, la restricción \ref{eq:9} mide la cantidad efectivamente recolectada de cada tipo de leche considerando las granjas visitadas por cada camión.
+
+        \begin{align} \label{eq:6}
+            z^{k t} \leq 1 - \sum_{r \in D^t: r \neq t, (i, r) \in IT }  y_{i}^{k r} , \forall k \in K_i, i \in N, t \in T
+        \end{align}
+        \begin{align} \label{eq:7}
+            \sum_{t\in T} z^{k t} \leq 1, \forall k \in K
+        \end{align}
+        \begin{align} \label{eq:8}
+            w^{ k t } \leq z^{k t} Q^k, \forall k \in K, t \in T
+        \end{align}
+        \begin{align} \label{eq:9}
+            w^{k t} \leq \sum_{r: t\in D^r} \sum_{h\in N^r} q_{h}^{r} y_{h}^{k r}  , \forall k \in K, t \in T
+        \end{align}
+
+     La restricción \ref{eq:10} se encarga de forzar que cada camión se lleve toda la leche producida por cada granja a la planta.
+
+        \begin{align} \label{eq:10}
+            \sum_{k\in K} \sum_{t\in T} w^{k t} = \sum_{(i, t) \in IT} {q_i^{t}}
+        \end{align}
+
+
+     La restricción \ref{eq:11} se encarga de equilibrar la cantidad de leche de cada calidad que
+llega a la planta y la cantidad de leche de cada calidad restante después de la mezcla
+en la planta.
+
+        \begin{align} \label{eq:11}
+            \sum_{r\in D^t} v^ {t r} = \sum_{k\in K} w^{k t} , \forall t \in T
+        \end{align}
+
+     La restricción \ref{eq:12} se encarga de controlar la satisfacción de las cuotas de leche de
+cada tipo.
+
+        \begin{align} \label{eq:12}
+            \sum_{t\in T} v^{t r} \geq P^r , \forall r \in D^t
+        \end{align}
+
+
+     La restricción \ref{eq:13} evita mezclas de leche prohibidas.
+
+        \begin{align} \label{eq:13}
+            y_i^{k t} + y_i^{k r} \leq 1, \forall (t, r) \in PM; (i, t), (j, t) \in IT
+        \end{align}
+
+
+     La restricción \ref{eq:14} evita la aparición de sub-ciclos en las rutas de cada camión.
+
+        \begin{align} \label{eq:14}
+            \sum_{i \in S}\sum_{j \in S} x_{i j}^{k} \leq |S| -1 , \forall S \subseteq N, k \in K
+        \end{align}
+
+
+     Las restricciones \ref{eq:15}, \ref{eq:16} y \ref{eq:17} controlan la naturaleza de las variables de decisión del modelo planteado. La restricción \ref{eq:15} controla la naturaleza binaria de las variables asociadas a los tipos de leche recolectados y mezclados en ruta. La restricción \ref{eq:16} controla la naturaleza de la variable binaria que controla las secuencias de visitas de los camiones. La restricción \ref{eq:17} controla la naturaleza no negativa de las variables de volúmenes de leche entregados y mezclados en planta.
+
+        \begin{align} \label{eq:15}
+            y_{i}^{k t}, z^{k t} \in \{0, 1\}, \forall i\in N, k \in K_i, t\in T : (i, t) \in IT
+        \end{align}
+        \begin{align} \label{eq:16}
+            x_{i j} ^ k \in {0, 1}, \forall (i, j, k) \in AK
+        \end{align}
+        \begin{align} \label{eq:17}
+            w^{k t}, v^{t r} \geq 0 , \forall k \in K; t, r \in T, r\in D^t
+        \end{align}
+
+%\end{itemize}
+
+Todas estas restricciones se trabajan como restricciones duras, es decir, toda solución al
+problema debe cumplir con todas las restricciones impuestas.

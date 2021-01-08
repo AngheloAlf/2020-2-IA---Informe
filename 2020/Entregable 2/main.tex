@@ -1,0 +1,88 @@
+\documentclass[spanish, fleqn]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,bindingoffset=0.0in,left=0.75in,right=0.85in,top=0.9in,bottom=0.90in,footskip=.25in]{geometry}
+
+%% Para las cosas bonitas en las esquinas de cada página
+\usepackage{fancyhdr}
+
+\usepackage[colorlinks, urlcolor=blue]{hyperref}
+
+%% Estilo personalizado del abstract
+\input{abstract_style}
+
+\usepackage{amsmath, amssymb} %Symbols
+\usepackage{dsfont} %Symbols
+\usepackage{multicol}
+
+%\usepackage{graphicx}
+
+%\usepackage{verbatim}
+%\usepackage{listings}
+
+\newcommand{\sigla}{INF-295}
+\newcommand{\ramo}{Inteligencia Artificial}
+\newcommand{\tarea}{Estado del Arte}
+\newcommand{\nombreTarea}{Milk Collection with Blending}
+
+\begin{document}
+%% Portada.
+
+\title{ \sigla: \ramo \\ \tarea: \nombreTarea }
+\author{\href{mailto:anghelo.carvajal.14@sansano.usm.cl}{Anghelo Carvajal} \\ 201473062-4}
+\date{\today}
+
+\maketitle
+
+%% Desactiva la numeración de páginas
+\pagenumbering{gobble} 
+
+\input{evaluacion.tex}
+
+%% Portada end.
+
+\newpage
+
+% Estilo de las esquinas de cada página
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\nombreTarea}
+\rhead{\ramo}
+\lfoot{\LaTeXe}
+\rfoot{Página \thepage}
+
+%% Activa numeración de páginas
+\pagenumbering{arabic} 
+
+\vspace{-16cm}
+
+\input{secciones/0_resumen.tex}
+
+\vspace{8pt}
+
+
+\begin{multicols}{2}
+\input{secciones/1_introduccion.tex}
+%\begin{multicols}{2}
+\input{secciones/2_definicion.tex}
+%\end{multicols}
+
+%\newpage
+
+%\begin{multicols}{2}
+\input{secciones/3_estado_arte.tex}
+%\end{multicols}
+
+%\newpage
+%\begin{multicols}{2}
+\input{secciones/4_modelo_mat.tex}
+%\end{multicols}
+%\newpage
+
+%\begin{multicols}{2}
+\input{secciones/5_conclusiones.tex}
+\input{secciones/6_bibliografia.tex}
+\end{multicols}
+
+\end{document}

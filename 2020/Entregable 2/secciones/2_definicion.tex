@@ -1,0 +1,22 @@
+\section{Definición del Problema}
+
+El problema \textit{Milk Collection with Blending} es un problema NP-duro, el cual surge en el año 2016 \cite{MilkWithBlending}.
+
+Este problema consiste en encontrar un conjunto de rutas óptimas para el recorrido de cada uno de los camiones que se tienen a disposición. Cada una de estas rutas debe proveer un camino para cada camión, de modo que este recoja toda la leche de cada una de las granjas que se le asigne y la lleve a la planta procesadora.
+
+Cada ruta puede empezar en cualquier parte, pero siempre debe terminar en la planta procesadora. Hay un costo asociado al desplazamiento de un camión entre una granja y la otra.
+
+La leche se categoriza en distintos tipos según su calidad. Estos tipos son ordenables de mejor a peor calidad, y las ganancias monetarias también son distintas según dicha calidad.
+La planta procesadora exige una cantidad mínima de cada tipo (calidad) de leche.
+
+Los camiones pueden transportar una cantidad limitada y no tienen compartimientos separados para cada tipo de leche, por lo que si un camión recoge leches de distintas calidades de las granjas, estas se mezclan dentro del camión, resultando en leche que se considera de la peor calidad de la mezcla. La ventaja de esto es reducir el costo de movilización de los camiones a cambio de menores ganancias por la calidad de la leche.
+
+Los parámetros del problema son los caminos entre las granjas de leche (representadas por un grafo), los caminos entre las granjas y la planta, y el costo de desplazar a un camión a través de cada uno de estos arcos. La cantidad de camiones de las que se dispone y la capacidad que cada uno puede transportar, las clasificaciones para los tipos de leche, que tipo y cuanta cantidad de leche produce cada granja. Cuanta cantidad de leche de cada tipo exige la planta procesadora en total. Granja en que cada camión inicia su ruta.
+
+Las variable principal de este problema es el orden en el cual cada camión recorre sus granjas, lo cual implica que tipos de leche recogería dicho camión de cada granja, que tipo de leche resultante entrega el camión a la planta y en que cantidad.
+
+Este problema se ve restringido por la capacidad máxima que tiene cada camión, que cada camión recolecte toda la leche de la granja a la que va a recolectar, que cada granja sea visitada por a lo más un camión, cada camión tiene a lo más 1 ruta, se debe respetar la cantidad de leche de cada tipo que exige la planta como mínimo.
+
+El objetivo de este problema es maximizar los beneficios monetarios, disminuyendo los recorridos de los camiones y aumentando la ganancia producida por la leche recolectada según su tipo.
+
+También existen otras variantes de este problema, como que cada camión pueda poseer distintos compartimientos para transportar la leche \cite{memeticalgorithmtabusearch}, de modo que 1.- no habría mezcla de leches o 2.- que se minimice la mezcla de tipos de leche; que existan puntos de recolección a los cuales las granjas acercan la leche \cite{MilkBlendingPoints}; o que algunas granjas no sean accesibles por grandes camiones \cite{MilkWithIncompatibilityConstraints}.
