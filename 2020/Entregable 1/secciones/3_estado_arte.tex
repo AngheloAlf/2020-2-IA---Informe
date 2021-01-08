@@ -1,0 +1,27 @@
+\section{Estado del Arte}
+
+Este problema es una variación del problema \textit{Vehicle Routing Problem} (VRP), el cual fue documentado por primera vez en el año 1959 \cite{TruckDispatchingProblem}. En dicho problema se discutía el encontrar un conjunto de rutas óptimas para una determinada cantidad de vehículos los cuales deben entregar paquetes a los respectivos clientes.
+
+Específicamente este problema no ha sido tan trabajado e investigado debido a ser un problema no tan antiguo. Algunos de los problemas similares y métodos confeccionados para resolver esos y este problema son:
+
+\begin{itemize}
+    \item El primer VRP fue realizado y documentado por Dantzig y Ramser en 1959 \cite{TruckDispatchingProblem}. Este se basaba en un problema de distribución de combustible, y apuntaba a repartir paquetes a clientes geográficamente separados usando un conjunto de vehículos. Aquí se concluye que este tipo de problema es NP-completo, debido a que podía ser reducido a un problema de vendedor viajero.
+    
+    \item A la fecha, la implementación que mejores resultados ha dado es la de Taillard \cite{Paralleliterativesearchroutingproblems}, la cual se basa en algoritmos de búsqueda tabú, en donde distribuye a los nodos en dos formas distintas, uno de forma uniforme y la otra de forma no euclidiana.
+    
+    \item Otro tipo de problema basado en VRP es la variante con múltiples productos (MPVRP), el cual ha sido enfrentado con algoritmos genéticos \cite{Modellingtransportlogisticssegregation}, el algoritmo de Dijkstra \cite{multiproductpackingdelivery} y modelos de programación lineal entera en conjunto a un solver \cite{optimizationvehiclethreedimensional} por nombrar algunos.
+    
+    \item Una variante similar a MPVRP es el problema de enrutamiento de vehículos con múltiples compartimientos (MCVRP). Un método notable es el de El Fallahi et. al. \cite{memeticalgorithmtabusearch}, dado que lo resuelven de tres formas distintas; con una heurística constructiva sin iteraciones de mejora, con busqueda tabú y con un algorítmo memético (el cual es a su vez una extensión del los algoritmos genéticos).
+    
+    \item La primera vez que se atacó de la recolección de leche como una variante específica de VRP fue en el año 1994 por Sankaran y Ubgade \cite{firstmilk} para resolver un caso real de 70 granjas en India. Ellos consideraron camiones de diferentes capacidades y no poder exceder ciertos límites de tiempo entre cada recolección dado a las distintas condiciones climáticas de la zona.
+    
+    \item El problema de la recolección de leche que admite la mezcla de los distintos tipos de leche (nuestro problema) fue abordado por primera vez el año 2016 por Germán Paredes-Belmar et. al \cite{MilkWithBlending}. En dicha ocasión se formuló el problema a través de un modelo entero mixto. Para resolver instancias medianas usaba un algoritmo de bifurcación y corte. Para instancias más grandes se utilizaba un procedimiento heurístico, el cual consiste en dividir la instancia real en conjuntos de granjas, las cuales eran repartidas según su ubicación. En este estudio se discute el mezclar los tipos de leches vs no mezclarlos al transportarlos en los camiones, y concluía que mezclar las leches predominaba por sobre no mezclarlos, debido a la viabilidad y relajación que esta otorga. También estudia como afecta los camiones con múltiples compartimientos y con compartimiento único a esta variante.
+    
+    \item En el año 2017, los mismos autores enfrentan una variante del problema \cite{MilkBlendingPoints}. En este problema se tenía una cantidad aún mayor de granjas, por lo que el modelo anterior no podía encontrar una solución en tiempo razonable, por lo que agregaron puntos de recolección para cada conjunto de granjas, lo cual permitió encontrar soluciones en tiempos mucho más acotados.
+
+    \item Villagran propone 2 acercamientos, basados técnicas de búsqueda local, para este problema, en el año 2019 \cite{Lechemezclada2}. Estos algoritmos eran basados en las técnicas \textit{hill-climbing} e \textit{iterated local search}, las cuales ambas entregaron soluciones de buena calidad, de modo que abre la puerta a la posibilidad de no usar técnicas completas para la resolución de este problema. En las pruebas del autor, estos algoritmos lograron obtener el óptimo global en la mayoría de instancias utilizadas. Cabe destacar que ambas implementaciones entregaban mejores resultados, tanto en calidad de la solución como en tiempo de ejecución, que los algoritmos del estado del arte hasta esa fecha.
+    
+    \item En el año 2019, Soto \cite{LecheConMezclaAnnealing} propone un acercamiento basado en la meta-heurística \textit{Simulated Annealing}, el cual tiene un muy buen desempeño en instancias pequeñas y medianas, comparables al solver CPLEX.
+
+\end{itemize}
+

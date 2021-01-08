@@ -1,0 +1,16 @@
+\usepackage{abstract}
+\usepackage{xcolor}
+
+\renewenvironment{abstract}{{\normalfont\textbf{Resumen\\}}}{}
+
+\definecolor{abstractGray}{RGB}{230,230,230}
+
+\usepackage{mdframed}
+\mdfdefinestyle{mdfabstract}{%
+    %linecolor=acsblue, linewidth=0.8pt,
+    backgroundcolor=abstractGray,
+    leftline=false, rightline=false,
+    topline=false, bottomline=false
+    %innertopmargin=0.25cm, innerbottommargin=0.25cm,
+    %innerleftmargin=0.25cm, innerrightmargin=0.25cm,
+}

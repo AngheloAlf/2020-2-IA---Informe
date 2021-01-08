@@ -1,0 +1,44 @@
+\section{Modelo Matemático}
+
+El modelo matemático propuesto en \cite{Leung2012LocalSearch} es:
+
+\begin{itemize}
+    \item La función objetivo a minimizar es $L(V, R)$.
+    \item Los parámetros son:
+    \begin{itemize}
+        \item Un conjunto de polígonos $\mathcal{P} = \{\mathcal{P}_1, ..., \mathcal{P}_n\}$.
+        \item Un conjunto de ángulos $\mathcal{O}$.
+        \item El ancho $W$ de la cinta.
+    \end{itemize}
+    \item Las variables son:
+    \begin{itemize}
+        \item $r_i$: El ángulo de rotación para un polígono $i; 1 \leq i \leq n$. Su dominio es el conjunto de ángulos $\mathcal{O}$.
+        \item $v_i$: Un vector de traslación ($v = (v_x, v_y)$) para el polígono $i; 1 \leq i \leq n$. Su dominio es $\mathds{R}^2$.
+    \end{itemize}
+    
+    \item Algunas definiciones necesarias para el modelo:
+    \begin{itemize}
+        \item La cinta rectangular $\mathcal{C} = \mathcal{C}(W, L)$.
+        
+        \item Punto $p$ en el plano bidimensional, representado por $p = (p_x, p_y) \in \mathds{R}^2$.
+
+        \item Segmento de linea $s$, el cual es un conjunto de puntos dentro de una limitada por 2 puntos $p_a$ y $p_b$. Representado por $s = \{p \in \mathds{R}^2, t\in [0, 1] \talque p = p_a + t (p_b) \}$.
+
+        \item Polígono $P$, el cual es una figura plana encerrada por un camino cerrado compuesto por una secuencia finita de segmentos de linea (denotados $S$). No hay ningún cruce entre cualquier par de segmentos de linea en $S$. Esta representado por $P = \{p \in \mathds{R}^2 \talque f_S(p) = 1 \}$, donde $f_S(p)$ es la función de conteo $f_S(p) = |\{s' \in S \talque \exists x' < p_x: (x', p_y) \in s'\}|$
+        
+        \item Función de traslación $\oplus$, la cual toma un polígono $P$ y un vector de traslación $v$. Está se define como $P \oplus v = \{ (p_x' + v_x, p_y' + v_y) \talque p' \in P \}$
+        
+        \item Función de rotación, la cual recibe un polígono $P$ y un ángulo $r$. Está definida como $P(r) = \{(p_x'\cos(r) + p_y'\sin(r), \text{ } -p_x'\sin(r) + p_y'\cos(r)) \talque p' \in P\}$
+        
+        \item Largo $L$ de la cinta. El largo de la cinta dependerá de el conjunto de desplazamientos $V = \{v_1, ..., v_n\}$ y el conjunto de rotaciones $R = \{r_1, ..., r_n\}$, los cuales provienen del conjunto $P$ de polígonos posicionados en la cinta. De este modo, se puede definir $L = L(V, R) = \text{max}( \{p_x \talque (p_x, p_y) \in P_r(r_i) \oplus v_i, \text{ } P_i \in \mathcal{P} \})$.
+    \end{itemize}
+
+    \item Restricciones:
+    \begin{itemize}
+        \item No hay ningún par de polígonos que se superpongan entre ellos:\\ $(P_i(r_i) \oplus v_i) \bigcup (P_j(r_j) \oplus v_j) = \phi; \text{ } 1 \leq i, j \leq n$
+        
+        \item Todos los polígonos se encuentran completamente dentro de la cinta:\\
+        $(P_i(r_i) \oplus v_i) \subseteq \mathcal{C}(W, L); \text{ } 1 \leq i \leq n$
+    \end{itemize}
+\end{itemize}
+

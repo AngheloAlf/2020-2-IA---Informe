@@ -1,0 +1,25 @@
+\section{Definición del Problema}
+
+El \textit{Irregular Strip Packing Problem} (ISPP) es un problema NP-duro surgido en 2006\cite{BottomLeftFillHeuristic2006}, el cual consiste en la colocación de polígonos irregulares en una cinta rectangular de ancho fijo y largo indeterminado, de modo que los polígonos no se superpongan ni se toquen entre ellos, y además estos polígonos deben estar siempre contenidos dentro de la cinta. La colocación óptima de estos polígonos es la que minimiza el largo de la cinta. Existe la posibilidad de rotar los polígonos para acomodarlos mejor, pero para simplificar el problema, se suele usar un conjunto finito y discreto de posibles ángulos para rotar cada polígono.
+
+Un ejemplo de aplicación de este problema es el de la industria de la ropa. Múltiples piezas de ropa son cortadas de un único rollo. Un rollo tiene un ancho fijo, pero un largo indeterminado, de modo que el problema es minimizar el largo requerido para producir la cantidad entregada de figuras irregulares \cite{Leung2012LocalSearch}.
+
+Los parámetros del problema son los polígonos a posicionar (usualmente descritos usando los vértices del polígono), los ángulos permitidos para las rotaciones de los polígonos y el ancho de la cinta.
+
+Las variables del problema son la posición donde se ubicará cada polígono y el ángulo de rotación de dicho polígono.
+
+Las restricciones que se les impone a las variables son que, al seleccionar una posición y rotación para un polígono este esté dentro de los limites de la cinta y que no se superponga con ningún otro polígono.
+
+El objetivo de este problema es minimizar el largo de la cinta, aprovechando lo mas posible el espacio utilizado al momento de colocar las figuras irregulares.
+
+Algunas variantes de este problema son:
+\begin{itemize}
+    \item \textit{Strip Packing Problem}. En este problema situar rectángulos de distintas dimensiones en una cinta de ancho fijo y largo variable de modo que se minimice el largo de la cinta. Tiene también una variante tridimensional. Realmente el ISPP se puede considerar una variante de SPP, debido a que este surgió antes que ISPP
+    
+    \item Permitir rotaciones arbitrarias de las figuras. En ISPP, los ángulos permitidos para las rotaciones son discretos, pero existen variantes que admiten ángulos arbitrarios para la rotación de cada una de estas figuras.
+    
+    \item Añadir mas dimensiones a la cinta y las figuras. La variante en 3 dimensiones suele ser útil para la distribución de objetos en bodegas u otros tipos de almacenamientos.
+
+    \item Otra variante es tener fijo el tamaño de la cinta y maximizar la cantidad de figuras que podemos colocar en dicha cinta.
+
+\end{itemize}

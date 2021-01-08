@@ -1,0 +1,125 @@
+\documentclass[spanish, fleqn]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage[a4paper,bindingoffset=0.0in,left=0.75in,right=0.85in,top=0.85in,bottom=0.90in,footskip=.25in]{geometry}
+
+\usepackage{amsmath, amssymb} %Symbols
+\usepackage{dsfont} %Symbols
+%\usepackage{enumerate}
+%\usepackage{multicol}
+\usepackage[colorlinks, urlcolor=blue]{hyperref}
+\usepackage{graphicx}
+% \graphicspath{ {images/} }
+\usepackage{xcolor}
+\definecolor{abstractGray}{RGB}{230,230,230}
+
+\usepackage{verbatim}
+\usepackage{listings}
+% \usepackage{ mathrsfs }
+% \usepackage{wrapfig}
+% \usepackage{enumitem}
+% \usepackage{afterpage}
+
+\usepackage{abstract}
+\renewenvironment{abstract}{{\normalfont\textbf{Resumen\\}}}
+{}
+
+\usepackage{mdframed}
+\mdfdefinestyle{mdfabstract}{%
+    %linecolor=acsblue, linewidth=0.8pt,
+    backgroundcolor=abstractGray,
+    leftline=false, rightline=false,
+    topline=false, bottomline=false
+    %innertopmargin=0.25cm, innerbottommargin=0.25cm,
+    %innerleftmargin=0.25cm, innerrightmargin=0.25cm,
+}
+
+% \usepackage{tikz} %% Grafos
+\usepackage{fancyhdr} %% Para las cosas bonitas en las esquinas de cada pagina
+
+%\newcommand\tab[1][0.5cm]{\hspace*{#1}}
+%\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\talque}{\texttt{ } | \texttt{ }}
+
+%\newcommand{\eclosure}[1]{\epsilon\text{-closure}(\{#1\})}
+
+%\newcommand\blankpage{%
+%    \null
+%    \thispagestyle{empty}%
+%    \addtocounter{page}{-1}%
+%    \newpage}
+
+\lstdefinestyle{myC}{
+  language=C,
+  backgroundcolor=\color{bggray},
+  basicstyle=\ttfamily\small\color{orange!70!black},
+  frame=L,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{red},
+  numbers=left,
+  showstringspaces=false,
+  xrightmargin=5pt,
+  xleftmargin=10pt
+}
+
+%\lstset{
+%    language=[LaTeX]TeX,
+%    breaklines=false,
+%    basicstyle=\tt\scriptsize,
+%    keywordstyle=\color{blue},
+%    identifierstyle=\color{magenta},
+%}
+
+% \renewcommand{\lstlistingname}{Código}
+
+\newcommand{\ramo}{INF-295: Inteligencia Artificial}
+\newcommand{\tarea}{Entregable}
+\newcommand{\numeroTarea}{1}
+\newcommand{\nombreTarea}{Estado del Arte: Irregular Strip Packing Problem}
+
+
+\begin{document}
+
+\title{\ramo \\
+% \tarea \numeroTarea\\
+\nombreTarea
+}
+\author{\href{mailto:anghelo.carvajal.14@gmail.com}{Anghelo Carvajal} \\ 201473062-4
+}
+
+\maketitle
+
+\pagenumbering{gobble} %% Desactiva la numeracion de paginas
+
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\lhead{\nombreTarea}
+% \chead{\ramo}
+\rhead{\ramo}
+%% \rhead{Pregunta \thesection}
+
+\lfoot{\LaTeXe}
+
+%% \cfoot{} %
+
+\rfoot{Página \thepage}
+
+\input{evaluacion.tex}
+
+\newpage
+\pagenumbering{arabic} %% Activa numeracion de paginas
+
+\input{secciones/0_resumen.tex}
+\input{secciones/1_introduccion.tex}
+\input{secciones/2_definicion.tex}
+\input{secciones/3_estado_arte.tex}
+\input{secciones/4_modelo_mat.tex}
+\input{secciones/5_conclusiones.tex}
+\input{secciones/6_bibliografia.tex}
+
+\end{document}

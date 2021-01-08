@@ -1,0 +1,16 @@
+\section{Estado del Arte}
+
+La primera mención en la literatura de los problemas de empaquetamiento surge en el año 1980 \cite{OrthogonalPackingsTwoDimensions1980}, donde discutían optimizar el largo de las cintas al empaquetar figuras rectangulares. Pero, una de las primeras menciones al problema de empaquetamiento irregular fue en 2006 \cite{BottomLeftFillHeuristic2006}, al presentar un algoritmo heurístico para este problema. Dicho método permite el empaquetamiento de objetos representados bajo lineas y además facilita embalar objetos que tienen arcos \cite{Empaquetamientodeobjetosregularesenuncontenedorrectangular2016}.
+
+Algunos de los métodos confeccionados para resolver este problema (excluyendo el anteriormente mencionado) son:
+\begin{itemize}
+    \item Un algoritmo híbrido, el cual mezcla algoritmos de simulación con modelos de programación lineal que optimizan localmente cada diseño \cite{hybridisingsimulatedannealingandlinearprogramming2006}.
+    \item Otro algoritmo híbrido, entre las metaheurísticas de GRASP y simulaciones para el empaquetamiento de figuras convexas y no convexas \cite{hybridheuristicfortheknapsackproblem2012}.
+    \item Algoritmo genético mezclado con procedimiento \textit{greedy} para solucionar la jerarquización de dos dimensiones \cite{AHybridMethodologyforNestingIrregularShapes2013}.
+    \item Algoritmo que utiliza la idea de la diferencia entre el área de una colección de polígonos y el área del casco convexo. Trabajando el empaquetamiento de figuras irregulares en un contenedor irregular y regular. La asignación en el contenedor se realiza por medio de pruebas de factibilidad (ángulo, inclusión, punto de intersección de polígonos, entre otros) \cite{Wasteminimizationinirregularstockcutting2013}.
+    \item Abordar el embalaje de figuras poligonales (no convexas), por medio de un algoritmo genético unido a una regla de colocación inferior-izquierda \cite{DealingwithNonregularShapesPacking2014}.
+    \item Un algoritmo GRASP. Esta implementación no depende de la forma de la pieza, por lo que es capaz de empaquetar hasta 30 objetos de siete diferentes tipos, de forma muy eficiente \cite{AGRASPmetaheuristicfortwodimensionalirregularcuttingstockproblem2015}.
+\end{itemize}
+
+Ha habido una clara tendencia en el uso de métodos \textit{greedy} y/o métodos híbridos para optimizar el tiempo de ejecución del problema.
+
