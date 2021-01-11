@@ -1,11 +1,18 @@
 \section{Descripción del algoritmo}
 
-%\textcolor{red}{Cómo fue implementando, interesa la implementación más que el algoritmo genérico, es decir, si se tiene que implementar SA, lo que se espera es que se explique en pseudo código la estructura general y en párrafo explicativo cada parte como fue implementada para su caso particular, si se utilizan operadores se debe explicar por que se utilizó ese operador, si fuera el caso de una técnica completa, si se utiliza recursión o no, etc. Use diagramas para mostrar la estructura general del algoritmo, diagramas de flujo de movimientos, esquemas, etc. En este punto no se espera que se incluya código, eso va aparte en la entrega del código fuente.}
+El algoritmo propuesto para resolver el problema es Hill Climbing. Dado que esta es una técnica incompleta, se separa en los pasos de la generación de solución inicial, función de evaluación, el mismo hill climbing y los movimientos a realizar. Los movimientos planteados son del tipo ``Alguna mejora''.
 
-%Este algoritmo al estar basado en una técnica incompleta como lo es Hill Climbing, está dividido en varios pasos, comenzando con la generación de la solución inicial.
-
+Cabe destacar que por como está construido el algoritmo para la generación de la solución inicial, este puede entregar soluciones infactibles como soluciones iniciales. Dado esto, los movimientos están planteados de modo que intentan priorizar el encontrar soluciones "menos infactibles" si la solución con la que están trabajando es infactible (a pesar de que puedan disminuir la calidad de la solución), y en segundo lugar intentan mejorar la calidad de la solución. Si la solución entregada a un movimiento ya es factible, entonces solo se preocupa de mejorar la calidad de la solución.
 
 \subsection{Generación de solución inicial}
+
+La generación de la solución inicial consiste en una asignación básica de granjas a los camiones disponibles, llamándole rutas a este conjunto. 
+
+Como primer paso, se generan tantas rutas como tipos de leche hay disponible, y a cada una de estas rutas se les asigna un tipo de leche distinto (líneas 4 a 8).
+
+Luego se asignan de forma aleatoria los camiones a estas rutas (líneas 10 a 23). Si durante la asignación aleatoria se intenta asignar un camión sin la suficiente capacidad para suplir la cuota del tipo de leche asociado a la ruta, se reinicia la asignación de camiones (Líneas 11 y 16).
+
+Finalmente, se seleccionan las granjas de forma aleatoria y se intentan agregar a las rutas con el tipo de leche asignado (Líneas 25 a 36).
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function initialSolution($instance$):
@@ -23,8 +30,8 @@ function initialSolution($instance$):
         for $index$ in $solution$ in random index order do
             $route$ $\gets$ $solution$[$index$]
             $truck$ $\gets$ $instance.trucks$[$index$]
-            if truck.capacity < route.quota do
-                valid $\gets$ false
+            if $truck.capacity$ < $route.quota$ do
+                $valid$ $\gets$ false
                 break
             end if
             
@@ -32,39 +39,26 @@ function initialSolution($instance$):
         end for
     end while
 
-    $TOL$ $\gets$ 0
-    $truck\_counter$ $\gets$ 0
-
     $farms$ $\gets$ $instance.farms$
     while $farms.length$ > 0 do
         $selected\_farm$ $\gets$ select random from $farms$
         for $route$ in $solution$ do
-            if $route.capacity\_left$ - $selected\_farm$ < 0 do
-                continue
-            end if
             if $route.milk\_type$ != $selected\_farm.milk\_type$ do
                 continue
             end if
-
             remove $selected\_farm$ from $farms$
             add $selected\_farm$ to $route$
-            $truck\_counter$ += 1
             $selected\_farm$ $\gets$ select random from $farms$
         end for
-
-        if $truck\_counter$ == 0 do
-            $TOL$ -= 10
-        else
-            $truck\_counter$ $\gets$ 0
-        end if
     end while
-
     return $solution$
 end function
 \end{lstlisting}
 
+
 \subsection{Función de evaluación}
 
+La función de evaluación de la solución consiste simplemente en un ciclo que itera por cada una de las rutas y suma la calidad de cada ruta.
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function evaluateSolution($solution$, $instance$):
@@ -75,6 +69,8 @@ function evaluateSolution($solution$, $instance$):
     return $result$
 end function
 \end{lstlisting}
+
+Por otro lado, la función de evaluación de la ruta es levemente más compleja. Consiste en sumar la leche producida de cada granja (Línea 7) y calcular la distancia total recorrida por el camión (Líneas 5, 8, 9 y 11). Luego se multiplica la cantidad de leche transportada por la ganancia del tipo de leche final y se le descuenta la distancia recorrida (Líneas 13 y 14). Además se penaliza la calidad de la ruta en caso de que se sobrepase la capacidad del camión (Lineas 15 a 17) y/o que no se alcance la cuota de este tipo de leche (Líneas 18 a 20).
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function evaluateRoute($route$, $initial\_node$):
@@ -104,12 +100,22 @@ end function
 
 \subsection{Hill climbing}
 
+El algoritmo principal de hill climbing está levemente modificado para poder realizar más de un único tipo de movimiento durante la ejecución. Estos movimientos se explican en las siguientes subsecciones.
+
+Se define una variable \texttt{movements}, la cual contiene los movimientos posibles a realizar (4 especificamente) y se copia la solución inicial a una nueva variable \texttt{solution}.
+
+Se usa un ciclo \texttt{while} para controlar la cantidad de iteraciones que se realizan y que no se sobrepase el límite engregado como parámetro. De esta forma se define el primer criterio de parada del algoritmo. El segundo criterio de parada es en caso de que se detecte que la solución llegó a un máximo local, si es así se detiene la ejecución y se entrega la solución final. Esto se controla a traves de la variable \texttt{is\_better\_solution}.
+
+Como se tiene más de un posible movimiento a realizar por iteración, se decide de forma aleatoria cual movimiento realizar en cada iteración (Línea 10 y 11).
+
+Cuando las funciones que ejecutan los movimientos reciben la encuentran cualquier mejor solución que la actual, estas retornan \texttt{true} y guardan dicha solución mejor en la solución que recibieron por parámetro. Si recorrieron todo el vecindario sin encontrar una solución mejor, retornan \texttt{false} y la solución que recibieron por parámetro queda exactamente igual que como la recibieron.
+
+Se ejecutan los movimientos en algún orden aleatorio sobre la solución hasta que esta mejore. Cuando mejora, se termina el orden actual de movimientos y se genera uno nuevo (Línea 14 a 16). Si se aplican todos los movimientos disponibles sobre la solución actual y ninguno logra mejorar la solución, se entiende que se encontró el óptimo local y se retorna la solución.
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function hillClimbing($initial\_solution$, $instance$, $K$):
     $solution$ $\gets$ $initial\_solution$
     $movements$ $\gets$ lista de movimientos
-
     $i$ $\gets$ 0
     $is\_better\_solution$ $\gets$ true
     while $i$ < $K$ && $is\_better\_solution$ do
@@ -130,9 +136,25 @@ function hillClimbing($initial\_solution$, $instance$, $K$):
 end function
 \end{lstlisting}
 
+A continuación se explican los 4 movimientos existentes.
 
 \subsubsection{Move node between routes}
 
+Este movimiento consiste en seleccionar un nodo de una ruta (Línea 3 y 9), removerlo de esta ruta (Línea 18) e insertarlo en una posición aleatoria de cualquier otra ruta (Línea 20 y 25).
+
+Además, se realizan algunas verificaciones antes de mover al nodo al nuevo destino para así evitar que la ruta se vuelva infactible. En la línea 10 se verifica que la elcamión asignado a la ruta en la que se va a insertar el nodo actual tenga capacidad suficiente para recibir este nodo. Las funciones \texttt{canRemoveFarm} (Línea 14) y \texttt{canAddFarm} (Línea 21) verifican si la ruta se volvería infactible al quitar o agregar el nodo a la ruta respectivamente.
+
+Después de haber movido el nodo de ruta se revisa si la solución era infactible, y de ser así se verifica si la solución dejó de ser ``menos infactible'', ya sea porque se sobrecarga menos el camión (\texttt{didCapacitiesLeftImproved}, Línea 28) o porque se está alcanzando el mínimo de la cuota pedido por el tipo de leche (\texttt{didQuotasDiffImproved}, Línea 29), si alguno de esos se cumple, se entiende que la solución es mejor y se retorna \texttt{true}.
+
+Si la solución es actualmente factible o si no se mejoró la factibilidad de la solución al realizar este movimiento, se calcula la nueva calidad de la solución y si es mejor que la anterior se retorna \texttt{true} (Líneas 35 a 38).
+
+Si la solución no era mejor de ninguna forma al insertar el nodo, se remueve el nodo inserado para poder intentar insertarlo en otra posición de esta ruta (Línea 40).
+
+Si no hay posición en esta ruta que al insertar el nodo mejore la solución, se agrega a su posición original de la ruta original para volver a empezar con otro nodo (Línea 43).
+
+Deshacer los cambios si no se encuentra una mejor solución permite que no sea necesario generar toda la vecindad desde el principio, si no que se vaya construyendo paso a paso mientras se requiere, ahorrando memoria y ciclos del procesador.
+
+Si se probaron todas las posibilidades que entrega este movimiento (es decir, se recorrió todo el vecindario) y ninguna mejoró la solución actual, se retorna \texttt{false}.
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function moveNodeBetweenRoutes($solution$, $instance$, $old\_quality$):
@@ -188,6 +210,12 @@ end function
 
 \subsubsection{2opt intra-route}
 
+Este movimiento consiste en un movimiento 2-opt sobre alguna ruta, hasta encontrar alguna que mejore la solución.
+
+Los valores de retorno son los mismos que los otros movimientos.
+
+Este movimiento no considera mejorar la factibilidad de la solución, ya que al invertir el orden de un subconjunto de nodos no afecta a ninguna restricción.
+
 \begin{lstlisting}[style=estiloPseudocodigo]
 function intraRoute2Opt($solution$, $instance$, $old\_quality$):
     for $route$ in $solution$ in random order do
@@ -204,12 +232,15 @@ function intraRoute2Opt($solution$, $instance$, $old\_quality$):
             end for
         end for
     end for
-
     return false
 end function
 \end{lstlisting}
 
 \subsubsection{Remove node}
+
+Este movimiento consiste en eliminar algún nodo cualquiera de cualquier ruta y ver si mejora la solución.
+
+Se confeccionó este movimiento debido a que se notó que durante la fase de pruebas del algoritmo muchas soluciones finales eran infactibles. Más especificamente, las soluciones proponían rutas que saturaban la capacidad de los camiones, principalmente rutas de la peor calidad. Como al mover una granja de mala calidad a una ruta de mejor calidad la empeora, no era posible quitar deshacerse de los nodos que saturaban al camión. Este movimiento intenta solucionar ese problema.
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function removeNode($solution$, $instance$, $old\_quality$):
@@ -245,6 +276,9 @@ end function
 
 \subsubsection{Interchange node between routes}
 
+Finalmente, este movimiento consiste en tomar 1 nodo de dos rutas distintas e intercambiarlos.
+
+Este movimiento fue planteado debido a que algunas soluciones entregadas por el programa podían mejorar al intercambiar un par de nodos en la misma iteración, en vez de mover un nodo de una ruta a otra en la primera iteración y luego lo mismo en la siguiente. Esto ocurre ya que hay mayor flexibilidad al realizar el movimiento, debido a que hay menos probabilidad de que alguna de las rutas se vuelvan infactibles al hacer este cambio.
 
 \begin{lstlisting}[style=estiloPseudocodigo]
 function interchangeNodeBetweenRoutes($solution$, $instance$, $old\_quality$):
