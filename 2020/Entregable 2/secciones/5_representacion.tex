@@ -1,5 +1,25 @@
 \section{Representación}
 
-\textcolor{red}{Representación matemática y estructura de datos que se usa (arreglos, matrices, etc.), por qué se usa (maneja restricciones, fácil de modificar, eficiente, etc), la relación entre la representación matemática y la estructura.}
+% \textcolor{red}{Representación matemática y estructura de datos que se usa (arreglos, matrices, etc.), por qué se usa (maneja restricciones, fácil de modificar, eficiente, etc), la relación entre la representación matemática y la estructura.}
 
-Como este problema tiene como objetivo encontrar rutas óptimas para una determinada cantidad de camiones, donde cada ruta consiste en el conjunto ordenado de granjas que recorrería el camión. Sabiendo esto, 
+Como este problema tiene como objetivo encontrar rutas óptimas para una determinada cantidad de camiones, donde cada ruta consiste en el conjunto ordenado de granjas que recorrería el camión. Sabiendo esto, una buena representación matemática consiste en un ``arreglo de arreglos'' o ``vector de vectores'' (no confundir con matriz). 
+
+Cada uno de estos vectores interiores modelarían las rutas que se le asignarían a los camiones, de modo que cada uno de estos vectores interiores contendrían los identificadores de las granjas a recorrer que se están asignando a esta ruta, y en el orden en el que se deben recorrer. De esta forma, el vector exterior contendría el listado de rutas que se le asignarían a cada uno de los camiones.
+
+Se usa esta representación debido a que se adapta bien al problema, ya que:
+\begin{itemize}
+    \item Permite tener rutas de distintos con distintas cantidades de granjas a recorrer (a diferencia de una matriz de tamaño fijo).
+    \item Como existen tantas rutas como camiones y cada camión está asignado a una ruta distinta, se maneja en parte la restricción \ref{eq:3}.
+    \item Al indicar simplemente que granjas debe recorrer en cada ruta y no almacenar más información, se fuerza a que el camión deba recoger toda la leche de cada granja que recorre, manejando la restricción \ref{eq:5} y \ref{eq:10} de forma implicita.
+    \item Al ser vectores que contienen granjas que no se repiten dentro del mismo vector u en otras rutas, se imposibilita que se generen sub-ciclos, por ende manejando la restricción \ref{eq:14}.
+\end{itemize}
+
+A nivel de implementación, se utilizaron clases que ayudan a cuidar la lógica interna y el estado de las variables. La solución final se ve representada por la clase \texttt{Solution}, la cual maneja las rutas usando un \texttt{std::vector<Route>}.
+
+La clase \texttt{Route} modela una ruta asignada a un camión y que transporta un tipo determinado de calidad de leche, además de manejar las granjas a recorrer por dicho camión usando un \texttt{std::vector<Node*>}. Se prefirió usar punteros a \texttt{Node} en lugar de usar la clase directamente para evitar la reinstanciación al mover una granja de una ruta a otra.
+
+La clase \texttt{Node} simplemente contiene los datos de la granja que representa, tal como el identificador, la posición, la cantidad de leche que produce, entre otros.
+
+Si se ignora la abstración de las clases antes mencionadas, esta implementación se puede interpretar como \texttt{std::vector<{\phantom{.}}std::vector<int>{\phantom{.}}>}, lo cual es muy similar a la representación matemática antes expuesta.
+
+Cabe destacar que una \texttt{Route} no incluye la planta procesadora, ya que un camión siempre debe comenzar y terminar su recorrido en ella, por lo que almacenarla de forma explicita sería un desperdicio de memoria y complicaría los movimientos a realizar. Además, al modelarlo de esta manera, se maneja en parte la restricción \ref{eq:3}.
