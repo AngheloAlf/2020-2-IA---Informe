@@ -1,3 +1,31 @@
 \section{Experimentos}
 
-\textcolor{red}{Se necesita saber cómo se hicieron los experimentos para testear los resultados del algoritmo (metodología usada, entorno de esperimentación, etc.), cuáles son, cómo se definen y cómo se obtienen parámetros del algoritmo, como los fueron modificando, describir las instancias que se usaron (complejidad, estructura, etc), criterio de término (si aplica). Debe comparar su algoritmo con el estado del arte, además de comparar ejecuciones con distintas especificaciones de su mismo algoritmo (Ejm. el valor del parámetro x siendo 0.1 vs 0.5 vs 0.9). Describir cantidad de ejecuciones usando semillas distintas para generar estadísticas.}
+% \textcolor{red}{Se necesita saber cómo se hicieron los experimentos para testear los resultados del algoritmo (metodología usada, entorno de esperimentación, etc.), cuáles son, cómo se definen y cómo se obtienen parámetros del algoritmo, como los fueron modificando, describir las instancias que se usaron (complejidad, estructura, etc), criterio de término (si aplica). Debe comparar su algoritmo con el estado del arte, además de comparar ejecuciones con distintas especificaciones de su mismo algoritmo (Ejm. el valor del parámetro x siendo 0.1 vs 0.5 vs 0.9). Describir cantidad de ejecuciones usando semillas distintas para generar estadísticas.}
+
+
+El algoritmo fue probado con 12 instancias\footnote{\url{https://github.com/AngheloAlf/2020-2_IA_Milk_collection_problem_with_blending/tree/master/instances}} de distintos tamaños. Además, se le agregó colores al output final del programa para poder saber más fácilmente si el resultado final es factible o no y para saber que calidad de leche produce cada granja asignada a cada ruta. 
+
+Si la solución final es infactible, se muestra en rojo el beneficio total de esta solución y la letra de la ruta infactible. Si la solución no es factible debido a que una ruta no cumple con la cuota mínima de ese tipo de leche, se muestra en rojo el número que indica la cantidad total de leche que se está llevando de este tipo de esa ruta. Además, se le asignó un color a las granjas dependiendo del tipo de leche que producen, si la granja es de tipo 'A' se mostrará en color verde; si es de tipo 'B' se mostrará en color amarillo y así sucesivamente.
+
+Esta metodología permitió detectar fácilmente que se generaban soluciones infactibles, analizar los datos y confeccionar nuevos movimientos y modificar los ya existentes para mejorar la factibilidad de las soluciones.
+
+El entorno de experimentación consiste en un equipo con procesador Intel Core i5-6400 2.70GHz, con 24GB de memoria RAM a 2133MHz y un disco de duro de 2TB y 5400rpm. El equipo cuenta con Pop!\_OS 20.10.
+
+El algoritmo requiere que se le entregue como parámetro los datos de la instancia y el máximo de iteraciones a realizar (llámese $K$).
+
+Para poder ejecutar el programa, se le debe entregar como parámetro la ruta a un archivo que contiene los datos de la instancia y el número entero $K$.
+
+Este archivo indíca la siguiente información:
+\begin{itemize}
+    \item La cantidad de camiones y la capacidad de cada uno.
+    \item La cantidad de tipos de leche, la cuota mínima que se requiere de cada tipo y la ganancia que aporta cada uno.
+    \item La cantidad de granjas y la información asociada a cada uno. Se indica un identificador numérico, posiciones x e y, una letra indicando la calidad de esta y la cantidad de leche producida. Cabe destacar que el primero de esta lista no es una granja, si no que se refiere a la planta procesardora.
+\end{itemize}
+
+El programa usa los datos de este archivo como parámetro para el algoritmo.
+
+Se utilizaron 12 instancias distintas, las cuales todas tenían 3 camiones y 3 tipos de leche en cada instancia (variando la cuota pedida y la capacidad de los camiones). La diferencia principal de las instancias son en la cantidad de nodos, variando desde 22 hasta 80 nodos, donde las instancias con mayor cantidad de nodos requerían una mayor cantidad de iteraciones para terminar.
+
+El algoritmo tiene 2 criterios de término. El primero es si la cantidad de iteraciones sobrepasa al parámetro $K$, entendiendose una iteración como la realización de alguno de los movimientos propuestos en la sección anterior. El segundo criterio de parada consiste en la detección de un óptimo local, de modo que ninguno de los movimientos propuestos puede mejorar la calidad de la solución.
+
+Todas las instancias fueron probadas repetidas veces con un $K=1000$, pero ninguna ejecución sobrepasó las 500 iteraciones. Normalmente oscilaban entre las 60 (instancias pequeñas) y las 460 iteraciones (instancias más grandes).
