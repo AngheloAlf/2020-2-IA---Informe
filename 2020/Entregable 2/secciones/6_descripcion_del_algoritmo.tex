@@ -4,27 +4,291 @@
 
 Este algoritmo al estar basado en una técnica incompleta como lo es Hill Climbing, está dividido en varios pasos, comenzando con la generación de la solución inicial.
 
+
 \subsection{Generación de solución inicial}
 
+\begin{lstlisting}[style=estiloPseudocodigo]
+function initialSolution($instance$):
+    $solution$ $\gets$ vector vacio de rutas
 
+    for $milk$ in $instance.milktypes$ in random order do
+        $route$ $\gets$ ruta vacia
+        assign $milk$ to $route$
+        add $route$ to $solution$
+    end for
+
+    $valid$ $\gets$ false
+    while not $valid$ do
+        $valid$ $\gets$ true
+        for $index$ in $solution$ in random index order do
+            $route$ $\gets$ $solution$[$index$]
+            $truck$ $\gets$ $instance.trucks$[$index$]
+            if truck.capacity < route.quota do
+                valid $\gets$ false
+                break
+            end if
+            
+            assign $truck$ to $route$
+        end for
+    end while
+
+    $TOL$ $\gets$ 0
+    $truck\_counter$ $\gets$ 0
+
+    $farms$ $\gets$ $instance.farms$
+    while $farms.length$ > 0 do
+        $selected\_farm$ $\gets$ select random from $farms$
+        for $route$ in $solution$ do
+            if $route.capacity\_left$ - $selected\_farm$ < 0 do
+                continue
+            end if
+            if $route.milk\_type$ != $selected\_farm.milk\_type$ do
+                continue
+            end if
+
+            remove $selected\_farm$ from $farms$
+            add $selected\_farm$ to $route$
+            $truck\_counter$ += 1
+            $selected\_farm$ $\gets$ select random from $farms$
+        end for
+
+        if $truck\_counter$ == 0 do
+            $TOL$ -= 10
+        else
+            $truck\_counter$ $\gets$ 0
+        end if
+    end while
+
+    return $solution$
+end function
+\end{lstlisting}
 
 \subsection{Función de evaluación}
 
 
+\begin{lstlisting}[style=estiloPseudocodigo]
+function evaluateSolution($solution$, $instance$):
+    $result$ $\gets$ 0
+    for $route$ in $solution$ do
+        $result$ += evaluateRoute($route$, $instance.initialNode$)
+    end for
+    return $result$
+end function
+\end{lstlisting}
+
+\begin{lstlisting}[style=estiloPseudocodigo]
+function evaluateRoute($route$, $initial\_node$):
+    $milk\_total$ $\gets$ 0
+    $total\_distance$ $\gets$ 0
+
+    $previous\_farm$ $\gets$ $initial\_node$
+    for $farm$ in $route$ do
+        $milk\_total$ += $farm.produced$
+        $total\_distance$ += distance($previous\_farm$, $farm$)
+        $previous\_farm$ $\gets$ $farm$
+    end for
+    $total\_distance$ += distance($previous\_farm$, $initial\_node$)
+
+    $quality$ $\gets$ $milk\_total$ * $milk\_profit\_percentage$
+    $quality$ -= $total\_distance$
+    if $milk\_total$ > $capacity$ do
+        $quality$ -= $milk\_total$ - $capacity$
+    end if
+    if $milk\_total$ < $quota$ do
+        $quality$ -= $quota$ - $milk\_total$
+    end if
+
+    return $quality$
+end function
+\end{lstlisting}
 
 \subsection{Hill climbing}
 
 
+\begin{lstlisting}[style=estiloPseudocodigo]
+function hillClimbing($initial\_solution$, $instance$, $K$):
+    $solution$ $\gets$ $initial\_solution$
+    $movements$ $\gets$ lista de movimientos
+
+    $i$ $\gets$ 0
+    $is\_better\_solution$ $\gets$ true
+    while $i$ < $K$ && $is\_better\_solution$ do
+        $is\_better\_solution$ $\gets$ false
+        $current\_quality$ = evaluateSolution($solution$, $instance$);
+
+        for $movement$ in $movements$ in random order do
+            $is\_better\_solution$ $\gets$ $movement$($solution$, $instance$, $current\_quality$)
+
+            $i$ += 1
+            if $is\_better\_solution$ do
+                break
+            end if
+        end for
+    end while
+
+    return $solution$
+end function
+\end{lstlisting}
 
 
 \subsubsection{Move node between routes}
 
 
+\begin{lstlisting}[style=estiloPseudocodigo]
+function moveNodeBetweenRoutes($solution$, $instance$, $old\_quality$):
+    $was\_feasible$ $\gets$ isFeasible($solution$)
+    for $src\_route$ in $solution$ in random order do
+        for $dst\_route$ in $solution$ in random order do
+            if $src\_route$ == $dst\_route$ do
+                continue
+            end if
+            
+            for $src\_farm$ in $src\_route$ in random order do
+                if $dst\_route.capacity\_left$ < $src\_farm.produced$ do
+                    continue
+                end if
+
+                if not canRemoveFarm($src\_route$,    $src\_farm$) do
+                    continue
+                end if
+
+                remove $src\_farm$ from $src\_route$
+
+                for $dst\_farm$ in $dst\_route$ in random order do
+                    if not canAddFarm($dst\_route$,    $src\_farm$) do
+                        continue
+                    end if
+
+                    add $src\_farm$ to $dst\_route$
+                    
+                    if not $was\_feasible$ do
+                        $capacities\_improved$ $\gets$ didCapacitiesLeftImproved($solution$)
+                        $quotas\_improved$ $\gets$ didQuotasDiffImproved($solution$)
+                        if $capacities\_improved$ || $quotas\_improved$ do
+                            return true
+                        end if
+                    end if
+
+                    $new\_quality$ $\gets$ evaluateSolution($solution$, $instance$)
+                    if $new\_quality$ > $old\_quality$ do
+                        return true
+                    end if
+
+                    remove $src\_farm$ from $dst\_route$
+                end for
+
+                add $src\_farm$ to $src\_route$
+            end for
+        end for
+    end for
+
+    return false
+end function
+\end{lstlisting}
+
 \subsubsection{2opt intra-route}
 
+\begin{lstlisting}[style=estiloPseudocodigo]
+function intraRoute2Opt($solution$, $instance$, $old\_quality$):
+    for $route$ in $solution$ in random order do
+        for $left\_farm\_index$ in $route$ in random index order do
+            for $right\_farm\_index$ in $route$[$left\_farm$+1:] in random order do
+                reverseOrder($route$, $left\_farm\_index$, $right\_farm\_index$)
+
+                $new\_quality$ $\gets$ evaluateSolution($solution$, $instance$)
+                if $new\_quality$ > $old\_quality$ do
+                    return true
+                end if
+
+                reverseOrder($route$, $left\_farm\_index$, $right\_farm\_index$)
+            end for
+        end for
+    end for
+
+    return false
+end function
+\end{lstlisting}
 
 \subsubsection{Remove node}
 
+\begin{lstlisting}[style=estiloPseudocodigo]
+function removeNode($solution$, $instance$, $old\_quality$):
+    $was\_feasible$ $\gets$ isFeasible($solution$)
+    for $route$ in $solution$ in random order do
+        for $farm$ in $route$ in random order do
+            if not canRemoveFarm($route$,    $farm$) do
+                continue
+            end if
+
+            remove $farm$ from $route$
+
+            if not $was\_feasible$ do
+                $capacities\_improved$ $\gets$ didCapacitiesLeftImproved($solution$)
+                $quotas\_improved$ $\gets$ didQuotasDiffImproved($solution$)
+                if $capacities\_improved$ || $quotas\_improved$ do
+                    return true
+                end if
+            end if
+
+            $new\_quality$ $\gets$ evaluateSolution($solution$, $instance$)
+            if $new\_quality$ > $old\_quality$ do
+                return true
+            end if
+
+            add $farm$ to $route$
+        end for
+    end for
+
+    return false
+end function
+\end{lstlisting}
 
 \subsubsection{Interchange node between routes}
 
+
+\begin{lstlisting}[style=estiloPseudocodigo]
+function interchangeNodeBetweenRoutes($solution$, $instance$, $old\_quality$):
+    $was\_feasible$ $\gets$ isFeasible($solution$)
+    for $src\_route\_index$ in $solution$ in random index order do
+        $src\_route$ $\gets$ $solution$[$src\_route\_index$]
+
+        for $src\_farm\_index$ in $src\_route$ in random index order do
+            $src\_farm$ $\gets$ $src\_route$[$src\_farm\_index$]
+
+            for $dst\_route$ in $solution$[$src\_route\_index$+1:] in random order do
+                if not isMilkTypeCompatible($dst\_route$, $src\_farm$) do
+                    continue
+                end if
+
+                for $dst\_farm\_index$ in $dst\_route$ in random index order do
+                    $dst\_farm$ $\gets$ $dst\_route$[$dst\_farm\_index$]
+                    if not isMilkTypeCompatible($src\_route$, $dst\_farm$) do
+                        continue
+                    end if
+
+                    $src\_route$[$src\_farm\_index$] $\gets$ $dst\_farm$
+                    $dst\_route$[$dst\_farm\_index$] $\gets$ $src\_farm$
+                    
+                    if not $was\_feasible$ do
+                        $capacities\_improved$ $\gets$ didCapacitiesLeftImproved($solution$)
+                        $quotas\_improved$ $\gets$ didQuotasDiffImproved($solution$)
+                        if $capacities\_improved$ || $quotas\_improved$ do
+                            return true
+                        end if
+                    end if
+
+                    $new\_quality$ $\gets$ evaluateSolution($solution$, $instance$)
+                    if $new\_quality$ > $old\_quality$ do
+                        return true
+                    end if
+
+                    $src\_route$[$src\_farm\_index$] $\gets$ $src\_farm$
+                    $dst\_route$[$dst\_farm\_index$] $\gets$ $dst\_farm$
+                end for
+            end for
+        end for
+    end for
+
+    return false
+end function
+\end{lstlisting}

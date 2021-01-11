@@ -1,0 +1,31 @@
+\usepackage{listings}
+\usepackage{newfloat}
+\usepackage{adjustbox}
+
+\lstdefinestyle{estiloPseudocodigo}{
+  language=c++,
+  backgroundcolor=\color{bggray},
+  basicstyle=\ttfamily\small\color{black!70!black},
+  %frame=L,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  xleftmargin=12pt,
+  xrightmargin=3pt,
+  tabsize=2,
+  otherkeywords={>>> ,function, end, input, output },
+  breaklines=true,
+  columns=fullflexible,
+  linewidth=\columnwidth,
+  numbers=left,
+  stepnumber=1,
+  numbersep=5pt,
+  mathescape=true
+}
+
+\newcommand{\inputPseudocodigo}[1]%
+{
+\lstinputlisting[style=estiloPseudocodigo] {#1}
+}

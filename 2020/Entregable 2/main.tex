@@ -21,6 +21,14 @@
 %\usepackage{verbatim}
 %\usepackage{listings}
 
+\usepackage{xcolor}
+
+\definecolor{bggray}{rgb}{0.95,0.95,0.95}
+
+
+\input{listing_configs.tex}
+
+
 \newcommand{\sigla}{INF-295}
 \newcommand{\ramo}{Inteligencia Artificial}
 \newcommand{\tarea}{Informe final}
@@ -73,7 +81,9 @@
 
 \input{secciones/5_representacion.tex}
 
+\end{multicols}
 \input{secciones/6_descripcion_del_algoritmo.tex}
+\begin{multicols}{2}
 
 \input{secciones/7_experimentos.tex}
 
